@@ -89,7 +89,7 @@ def populated_node_config_dict():
         "grants": {},
         "packages": [],
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
 
 
@@ -173,12 +173,12 @@ def base_parsed_model_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "deferred": False,
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {},
         "meta": {},
         "checksum": {
@@ -282,11 +282,11 @@ def complex_parsed_model_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {
             "a": {
                 "name": "a",
@@ -503,7 +503,7 @@ def basic_parsed_seed_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "deferred": False,
@@ -596,7 +596,7 @@ def complex_parsed_seed_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "deferred": False,
@@ -803,11 +803,11 @@ def base_parsed_hook_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {},
         "meta": {},
         "checksum": {
@@ -886,11 +886,11 @@ def complex_parsed_hook_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {
             "a": {
                 "name": "a",
@@ -1043,7 +1043,7 @@ def basic_parsed_schema_test_dict():
             "schema": "dbt_test__audit",
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {},
         "test_metadata": {
             "name": "foo",
@@ -1123,7 +1123,7 @@ def complex_parsed_schema_test_dict():
             "schema": "dbt_test__audit",
         },
         "docs": {"show": False},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {
             "a": {
                 "name": "a",
@@ -1244,7 +1244,7 @@ def basic_timestamp_snapshot_config_dict():
         "grants": {},
         "packages": [],
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
 
 
@@ -1282,7 +1282,7 @@ def complex_timestamp_snapshot_config_dict():
         "grants": {},
         "packages": [],
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
 
 
@@ -1348,7 +1348,7 @@ def basic_check_snapshot_config_dict():
         "grants": {},
         "packages": [],
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
 
 
@@ -1386,7 +1386,7 @@ def complex_set_snapshot_config_dict():
         "grants": {},
         "packages": [],
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
 
 
@@ -1502,11 +1502,11 @@ def basic_timestamp_snapshot_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {},
         "meta": {},
         "checksum": {
@@ -1650,11 +1650,11 @@ def basic_check_snapshot_dict():
             "meta": {},
             "grants": {},
             "docs": {"show": True},
-            "contract": {"enforced": False},
+            "contract": {"enforced": False, "alias_types": True},
             "packages": [],
         },
         "docs": {"show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
         "columns": {},
         "meta": {},
         "checksum": {

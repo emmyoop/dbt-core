@@ -231,6 +231,7 @@ class ColumnInfo(AdditionalPropertiesMixin, ExtensibleDbtClassMixin, Replaceable
 @dataclass
 class Contract(dbtClassMixin, Replaceable):
     enforced: bool = False
+    alias_types: bool = True
     checksum: Optional[str] = None
 
 
