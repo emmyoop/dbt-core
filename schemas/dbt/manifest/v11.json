@@ -10,7 +10,7 @@
         },
         "dbt_version": {
           "type": "string",
-          "default": "1.7.0b1"
+          "default": "1.7.0b2"
         },
         "generated_at": {
           "type": "string"
@@ -172,6 +172,10 @@
         "enforced": {
           "type": "boolean",
           "default": false
+        },
+        "alias_types": {
+          "type": "boolean",
+          "default": true
         }
       },
       "additionalProperties": false
@@ -559,6 +563,10 @@
         "enforced": {
           "type": "boolean",
           "default": false
+        },
+        "alias_types": {
+          "type": "boolean",
+          "default": true
         },
         "checksum": {
           "anyOf": [

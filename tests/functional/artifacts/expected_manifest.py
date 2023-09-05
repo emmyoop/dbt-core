@@ -36,7 +36,7 @@ def get_rendered_model_config(**updates):
         "packages": [],
         "incremental_strategy": None,
         "docs": {"node_color": None, "show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
     result.update(updates)
     return result
@@ -71,7 +71,7 @@ def get_rendered_seed_config(**updates):
         "packages": [],
         "incremental_strategy": None,
         "docs": {"node_color": None, "show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
     result.update(updates)
     return result
@@ -111,7 +111,7 @@ def get_rendered_snapshot_config(**updates):
         "packages": [],
         "incremental_strategy": None,
         "docs": {"node_color": None, "show": True},
-        "contract": {"enforced": False},
+        "contract": {"enforced": False, "alias_types": True},
     }
     result.update(updates)
     return result
@@ -327,7 +327,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                         "constraints": [],
                     },
                 },
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "constraints": [],
                 "patch_path": "test://" + model_schema_yml_path,
                 "docs": {"node_color": None, "show": False},
@@ -420,7 +420,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                         "constraints": [],
                     },
                 },
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "constraints": [],
                 "patch_path": "test://" + model_schema_yml_path,
                 "docs": {"node_color": None, "show": False},
@@ -563,7 +563,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                 },
                 "checksum": {"name": "none", "checksum": ""},
                 "unrendered_config": unrendered_test_config,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
             },
             "snapshot.test.snapshot_seed": {
                 "alias": "snapshot_seed",
@@ -575,7 +575,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                 "compiled": True,
                 "compiled_code": ANY,
                 "config": snapshot_config,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "database": project.database,
                 "group": None,
                 "deferred": False,
@@ -624,7 +624,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                 "columns": {},
                 "config": test_config,
                 "group": None,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": ["macro.test.test_nothing", "macro.dbt.get_where_subquery"],
@@ -677,7 +677,7 @@ def expected_seeded_manifest(project, model_database=None, quote_model=False):
                 "columns": {},
                 "config": test_config,
                 "group": None,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": ["macro.dbt.test_unique", "macro.dbt.get_where_subquery"],
@@ -948,7 +948,7 @@ def expected_references_manifest(project):
                 "unique_id": "model.test.ephemeral_copy",
                 "compiled": True,
                 "compiled_code": ANY,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "extra_ctes_injected": True,
                 "extra_ctes": [],
                 "checksum": checksum_file(ephemeral_copy_path),
@@ -984,7 +984,7 @@ def expected_references_manifest(project):
                     },
                 },
                 "config": get_rendered_model_config(materialized="table", group="test_group"),
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": [],
@@ -1053,7 +1053,7 @@ def expected_references_manifest(project):
                     },
                 },
                 "config": get_rendered_model_config(),
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "database": project.database,
                 "depends_on": {
                     "macros": [],
@@ -1177,7 +1177,7 @@ def expected_references_manifest(project):
                 "compiled": True,
                 "compiled_code": ANY,
                 "config": get_rendered_snapshot_config(target_schema=alternate_schema),
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "database": model_database,
                 "deferred": False,
                 "depends_on": {"macros": [], "nodes": ["seed.test.seed"]},
@@ -1532,7 +1532,7 @@ def expected_versions_manifest(project):
                 "unique_id": "model.test.versioned_model.v1",
                 "compiled": True,
                 "compiled_code": ANY,
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "extra_ctes_injected": True,
                 "extra_ctes": [],
                 "checksum": checksum_file(versioned_model_v1_path),
@@ -1574,7 +1574,7 @@ def expected_versions_manifest(project):
                     materialized="view", group="test_group", meta={"size": "large", "color": "red"}
                 ),
                 "constraints": [],
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {"macros": [], "nodes": []},
                 "deferred": False,
@@ -1621,7 +1621,7 @@ def expected_versions_manifest(project):
                 "columns": {},
                 "config": get_rendered_model_config(),
                 "constraints": [],
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "database": project.database,
                 "depends_on": {
                     "macros": [],
@@ -1682,7 +1682,7 @@ def expected_versions_manifest(project):
                 "columns": {},
                 "config": test_config,
                 "group": "test_group",
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": ["macro.dbt.test_unique", "macro.dbt.get_where_subquery"],
@@ -1736,7 +1736,7 @@ def expected_versions_manifest(project):
                 "columns": {},
                 "config": test_config,
                 "group": "test_group",
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": ["macro.dbt.test_unique", "macro.dbt.get_where_subquery"],
@@ -1790,7 +1790,7 @@ def expected_versions_manifest(project):
                 "columns": {},
                 "config": test_config,
                 "group": "test_group",
-                "contract": {"checksum": None, "enforced": False},
+                "contract": {"checksum": None, "enforced": False, "alias_types": True},
                 "sources": [],
                 "depends_on": {
                     "macros": ["macro.dbt.test_unique", "macro.dbt.get_where_subquery"],
