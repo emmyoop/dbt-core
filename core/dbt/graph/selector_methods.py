@@ -18,6 +18,7 @@ from dbt.contracts.graph.nodes import (
     ResultNode,
     ManifestNode,
     ModelNode,
+    SemanticModel,
 )
 from dbt.contracts.graph.unparsed import UnparsedVersion
 from dbt.contracts.state import PreviousState
@@ -53,6 +54,7 @@ class MethodName(StrEnum):
     SourceStatus = "source_status"
     Wildcard = "wildcard"
     Version = "version"
+    SemanticModel = "semantic_model"
 
 
 def is_selected_node(fqn: List[str], node_selector: str, is_versioned: bool) -> bool:
@@ -143,6 +145,16 @@ class SelectorMethod(metaclass=abc.ABCMeta):
             if unique_id not in included_nodes:
                 continue
             yield unique_id, metric
+
+    def semamntic_model_nodes(
+        self, included_nodes: Set[UniqueId]
+    ) -> Iterator[Tuple[UniqueId, SemanticModel]]:
+
+        for key, semantic_model in self.manifest.semantic_models.items():
+            unique_id = UniqueId(key)
+            if unique_id not in included_nodes:
+                continue
+            yield unique_id, semantic_model
 
     def all_nodes(
         self, included_nodes: Set[UniqueId]
@@ -314,6 +326,31 @@ class MetricSelectorMethod(SelectorMethod):
             raise DbtRuntimeError(msg)
 
         for node, real_node in self.metric_nodes(included_nodes):
+            if not fnmatch(real_node.package_name, target_package):
+                continue
+            if not fnmatch(real_node.name, target_name):
+                continue
+
+            yield node
+
+
+class SemanticModelSelectorMethod(SelectorMethod):
+    def search(self, included_nodes: Set[UniqueId], selector: str) -> Iterator[UniqueId]:
+        parts = selector.split(".")
+        target_package = SELECTOR_GLOB
+        if len(parts) == 1:
+            target_name = parts[0]
+        elif len(parts) == 2:
+            target_package, target_name = parts
+        else:
+            msg = (
+                'Invalid semantic model selector value "{}". Semantic models must be of '
+                "the form ${{semantic_model_name}} or "
+                "${{semantic_model_package.semantic_model_name}}"
+            ).format(selector)
+            raise DbtRuntimeError(msg)
+
+        for node, real_node in self.semamntic_model_nodes(included_nodes):
             if not fnmatch(real_node.package_name, target_package):
                 continue
             if not fnmatch(real_node.name, target_name):
@@ -761,6 +798,7 @@ class MethodManager:
         MethodName.Result: ResultSelectorMethod,
         MethodName.SourceStatus: SourceStatusSelectorMethod,
         MethodName.Version: VersionSelectorMethod,
+        MethodName.SemanticModel: SemanticModelSelectorMethod,
     }
 
     def __init__(
