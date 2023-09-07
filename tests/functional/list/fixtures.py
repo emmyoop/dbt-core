@@ -103,6 +103,30 @@ select 4 as id
 
 """
 
+semantic_models__sm_yml = """
+semantic_models:
+  - name: my_sm
+    model: ref('outer)
+    entities:
+      - name: my_entity
+        type: primary
+        expr: id
+    measures:
+      - name: total_outer_count
+        type: count
+
+"""
+
+metrics__m_yml = """
+metrics:
+  - name: total_outer
+    type: simple
+    description: The total count of outer
+    label: Total Outer
+    type_params:
+      measure: total_outer_count
+"""
+
 
 @pytest.fixture(scope="class")
 def snapshots():
@@ -142,6 +166,16 @@ def analyses():
 
 
 @pytest.fixture(scope="class")
+def semantic_models():
+    return {"sm.yml": semantic_models__sm_yml}
+
+
+@pytest.fixture(scope="class")
+def metrics():
+    return {"m.yml": metrics__m_yml}
+
+
+@pytest.fixture(scope="class")
 def project_files(
     project_root,
     snapshots,
@@ -150,6 +184,8 @@ def project_files(
     macros,
     seeds,
     analyses,
+    semantic_models,
+    metrics,
 ):
     write_project_files(project_root, "snapshots", snapshots)
     write_project_files(project_root, "tests", tests)
@@ -157,3 +193,5 @@ def project_files(
     write_project_files(project_root, "macros", macros)
     write_project_files(project_root, "seeds", seeds)
     write_project_files(project_root, "analyses", analyses)
+    write_project_files(project_root, "semantic_models", semantic_models)
+    write_project_files(project_root, "metrics", metrics)
