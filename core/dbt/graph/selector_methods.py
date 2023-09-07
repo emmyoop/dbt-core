@@ -146,7 +146,7 @@ class SelectorMethod(metaclass=abc.ABCMeta):
                 continue
             yield unique_id, metric
 
-    def semamntic_model_nodes(
+    def semantic_model_nodes(
         self, included_nodes: Set[UniqueId]
     ) -> Iterator[Tuple[UniqueId, SemanticModel]]:
 
@@ -164,6 +164,7 @@ class SelectorMethod(metaclass=abc.ABCMeta):
             self.source_nodes(included_nodes),
             self.exposure_nodes(included_nodes),
             self.metric_nodes(included_nodes),
+            self.semantic_model_nodes(included_nodes),
         )
 
     def configurable_nodes(
@@ -179,6 +180,7 @@ class SelectorMethod(metaclass=abc.ABCMeta):
             self.parsed_nodes(included_nodes),
             self.exposure_nodes(included_nodes),
             self.metric_nodes(included_nodes),
+            self.semantic_model_nodes(included_nodes),
         )
 
     def groupable_nodes(
@@ -350,7 +352,7 @@ class SemanticModelSelectorMethod(SelectorMethod):
             ).format(selector)
             raise DbtRuntimeError(msg)
 
-        for node, real_node in self.semamntic_model_nodes(included_nodes):
+        for node, real_node in self.semantic_model_nodes(included_nodes):
             if not fnmatch(real_node.package_name, target_package):
                 continue
             if not fnmatch(real_node.name, target_name):
@@ -468,7 +470,7 @@ class ResourceTypeSelectorMethod(SelectorMethod):
             resource_type = NodeType(selector)
         except ValueError as exc:
             raise DbtRuntimeError(f'Invalid resource_type selector "{selector}"') from exc
-        for node, real_node in self.parsed_nodes(included_nodes):
+        for node, real_node in self.all_nodes(included_nodes):
             if real_node.resource_type == resource_type:
                 yield node
 
