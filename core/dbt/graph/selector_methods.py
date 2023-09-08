@@ -578,7 +578,7 @@ class StateSelectorMethod(SelectorMethod):
     def check_modified_content(
         self, old: Optional[SelectorTarget], new: SelectorTarget, adapter_type: str
     ) -> bool:
-        if isinstance(new, (SourceDefinition, Exposure, Metric)):
+        if isinstance(new, (SourceDefinition, Exposure, Metric, SemanticModel)):
             # these all overwrite `same_contents`
             different_contents = not new.same_contents(old)  # type: ignore
         else:

@@ -46,7 +46,16 @@ models__ephemeral_sql = """
 
 {{ config(materialized='ephemeral') }}
 
-select 1 as id
+select
+  1 as id,
+  {{ dbt.date_trunc('day', dbt.current_timestamp()) }} as created_at
+
+"""
+
+models__metric_flow = """
+
+select
+  {{ dbt.date_trunc('day', dbt.current_timestamp()) }} as date_day
 
 """
 
@@ -106,14 +115,22 @@ select 4 as id
 semantic_models__sm_yml = """
 semantic_models:
   - name: my_sm
-    model: ref('outer)
+    model: ref('outer')
+    defaults:
+      agg_time_dimension: created_at
     entities:
       - name: my_entity
         type: primary
         expr: id
+    dimensions:
+      - name: created_at
+        type: time
+        type_params:
+          time_granularity: day
     measures:
       - name: total_outer_count
-        type: count
+        agg: count
+        expr: 1
 
 """
 
@@ -146,6 +163,9 @@ def models():
         "incremental.sql": models__incremental_sql,
         "docs.md": models__docs_md,
         "outer.sql": models__outer_sql,
+        "metricflow_time_spine.sql": models__metric_flow,
+        "sm.yml": semantic_models__sm_yml,
+        "m.yml": metrics__m_yml,
         "sub": {"inner.sql": models__sub__inner_sql},
     }
 
@@ -184,8 +204,6 @@ def project_files(
     macros,
     seeds,
     analyses,
-    semantic_models,
-    metrics,
 ):
     write_project_files(project_root, "snapshots", snapshots)
     write_project_files(project_root, "tests", tests)
@@ -193,5 +211,3 @@ def project_files(
     write_project_files(project_root, "macros", macros)
     write_project_files(project_root, "seeds", seeds)
     write_project_files(project_root, "analyses", analyses)
-    write_project_files(project_root, "semantic_models", semantic_models)
-    write_project_files(project_root, "metrics", metrics)
