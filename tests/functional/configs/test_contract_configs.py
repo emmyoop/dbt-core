@@ -109,6 +109,32 @@ models:
         data_type: date
 """
 
+model_schema_alias_types_false_yml = """
+version: 2
+models:
+  - name: my_model
+    config:
+      contract:
+        enforced: true
+        alias_types: false
+    columns:
+      - name: id
+        quote: true
+        data_type: integer
+        description: hello
+        constraints:
+            - type: not_null
+            - type: primary_key
+            - type: check
+              expression: (id > 0)
+        tests:
+          - unique
+      - name: color
+        data_type: string
+      - name: date_day
+        data_type: date
+"""
+
 model_schema_ignore_unsupported_yml = """
 version: 2
 models:
@@ -263,6 +289,15 @@ class TestModelLevelContractEnabledConfigs:
             "select 'blue' as color, 1 as id, cast('2019-01-01' as date) as date_day"
             == cleaned_code
         )
+
+        # set alias_types to false (should fail to compile)
+        write_file(
+            model_schema_alias_types_false_yml,
+            project.project_root,
+            "models",
+            "constraints_schema.yml",
+        )
+        run_dbt(["run"], expect_pass=False)
 
 
 class TestProjectContractEnabledConfigs:
