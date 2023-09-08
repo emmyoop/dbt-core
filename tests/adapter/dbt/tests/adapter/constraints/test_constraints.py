@@ -197,7 +197,7 @@ class BaseConstraintsRuntimeDdlEnforcement:
     def expected_sql(self):
         return """
 create table <model_identifier> (
-    id integer not null primary key check ((id > 0)) check (id >= 1) references <foreign_key_model_identifier> (id) unique,
+    id INT not null primary key check ((id > 0)) check (id >= 1) references <foreign_key_model_identifier> (id) unique,
     color text,
     date_day text
 ) ;
@@ -441,7 +441,7 @@ class BaseModelConstraintsRuntimeEnforcement:
     def expected_sql(self):
         return """
 create table <model_identifier> (
-    id integer not null,
+    id int not null,
     color text,
     date_day text,
     check ((id > 0)),
@@ -508,7 +508,7 @@ class BaseConstraintQuotedColumn(BaseConstraintsRuntimeDdlEnforcement):
     def expected_sql(self):
         return """
 create table <model_identifier> (
-    id integer not null,
+    id int not null,
     "from" text not null,
     date_day text,
     check (("from" = 'blue'))
