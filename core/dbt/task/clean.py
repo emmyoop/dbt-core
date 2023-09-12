@@ -23,15 +23,15 @@ class CleanTask(BaseTask):
         """
         project_dir = move_to_nearest_project_dir(self.args.project_dir)
 
-        potential_clean_paths = set(Path(p) for p in self.project.clean_targets)
+        potential_clean_paths = set(Path(p).resolve() for p in self.project.clean_targets)
         source_paths = set(
-            Path(p) for p in (*self.project.all_source_paths, *self.project.test_paths)
+            Path(p).resolve() for p in (*self.project.all_source_paths, *self.project.test_paths)
         )
         clean_paths = potential_clean_paths.difference(source_paths)
 
         if potential_clean_paths != clean_paths:
             raise DbtRuntimeError(
-                f"dbt will not clean the following source paths: {source_paths.intersection(potential_clean_paths)}"
+                f"dbt will not clean the following source paths: {[str(s) for s in source_paths.intersection(potential_clean_paths)]}"
             )
 
         paths_outside_project = set(
@@ -39,7 +39,7 @@ class CleanTask(BaseTask):
         )
         if paths_outside_project:
             raise DbtRuntimeError(
-                f"dbt will not clean the following directories outside the project: {paths_outside_project}"
+                f"dbt will not clean the following directories outside the project: {[str(p) for p in paths_outside_project]}"
             )
 
         if (
