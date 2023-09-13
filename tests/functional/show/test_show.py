@@ -157,6 +157,9 @@ class TestShowLimit(ShowBase):
         dbt_args = ["show", "--inline", models__second_ephemeral_model, *args]
         results = run_dbt(dbt_args)
         assert len(results.results[0].agate_table) == expected
+        # ensure limit was injected in compiled_code when limit specified in command args
+        if results.args.get('limit') > 0:
+            assert 'limit' in results.results[0].node.compiled_code
 
 
 class TestShowSeed(ShowBase):

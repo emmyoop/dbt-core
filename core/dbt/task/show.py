@@ -25,13 +25,13 @@ class ShowRunner(CompileRunner):
         limit = None if self.config.args.limit < 0 else self.config.args.limit
 
         model_context = generate_runtime_model_context(compiled_node, self.config, manifest)
-        show_limit_sql = self.adapter.execute_macro(
+        compiled_node.compiled_code = self.adapter.execute_macro(
             macro_name="show",
             manifest=manifest,
             context_override=model_context,
             kwargs={"limit": limit},
         )
-        adapter_response, execute_result = self.adapter.execute(show_limit_sql, fetch=True)
+        adapter_response, execute_result = self.adapter.execute(compiled_node.compiled_code, fetch=True)
 
         end_time = time.time()
 
