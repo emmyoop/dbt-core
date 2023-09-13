@@ -73,7 +73,7 @@ from dbt.adapters.base import Credentials
 from dbt.adapters.cache import RelationsCache, _make_ref_key_dict
 from dbt import deprecations
 
-GET_CATALOG_MACRO_NAME = "get_catalog"
+GET_CATALOG_RELATIONS_MACRO_NAME = "get_catalog_relations"
 FRESHNESS_MACRO_NAME = "collect_freshness"
 
 
@@ -1080,12 +1080,24 @@ class BaseAdapter(metaclass=AdapterMeta):
         information_schema: InformationSchema,
         schemas: Set[str],
         manifest: Manifest,
+        relations_by_schema: Optional[Dict[str, Optional[List[BaseRelation]]]] = None,
     ) -> agate.Table:
-        kwargs = {"information_schema": information_schema, "schemas": schemas}
+
+        if relations_by_schema is None:
+            # The caller has not specified which relations they would like included
+            # in the results, so we specify None for each schema, which indicates
+            # to the get_catalog_relations macro that all relations for the schemas
+            # in the map should be returned.
+            relations_by_schema = {schema: None for schema in schemas}
+
+        kwargs = {
+            "information_schema": information_schema,
+            "relations_by_schema": relations_by_schema,
+        }
         table = self.execute_macro(
-            GET_CATALOG_MACRO_NAME,
+            GET_CATALOG_RELATIONS_MACRO_NAME,
             kwargs=kwargs,
-            # pass in the full manifest so we get any local project
+            # pass in the full manifest, so we get any local project
             # overrides
             manifest=manifest,
         )
