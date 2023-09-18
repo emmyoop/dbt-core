@@ -1,18 +1,15 @@
-{% macro get_catalog_relations(information_schema, relations_by_schema) -%}
-  {{ return(adapter.dispatch('get_catalog_relations', 'dbt')(information_schema, relations_by_schema)) }}
+{% macro get_catalog_relations(information_schema, relations) -%}
+  {{ return(adapter.dispatch('get_catalog_relations', 'dbt')(information_schema, relations)) }}
 {%- endmacro %}
 
-{#
-  The following default implementation simply relies on the more general
-  get_catalog macro. This is potentially less efficient than returning only the
-  relations the caller has asked for, but returning more results than were
-  requested is intentionally permitted by dbt, as long as the requested
-  relations are present.
-#}
-{% macro default__get_catalog_relations(information_schema, relations_by_schema) -%}
-    {%- set schemas = relations_by_schema | list -%}
-    {{ return(adapter.dispatch('get_catalog', 'dbt')(information_schema, schemas)) }}
-{% endmacro %}
+{% macro default__get_catalog_relations(information_schema, relations) -%}
+  {% set typename = adapter.type() %}
+  {% set msg -%}
+    get_catalog_relations not implemented for {{ typename }}
+  {%- endset %}
+
+  {{ exceptions.raise_compiler_error(msg) }}
+{%- endmacro %}
 
 {% macro get_catalog(information_schema, schemas) -%}
   {{ return(adapter.dispatch('get_catalog', 'dbt')(information_schema, schemas)) }}

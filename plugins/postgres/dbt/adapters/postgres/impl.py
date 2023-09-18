@@ -73,6 +73,8 @@ class PostgresAdapter(SQLAdapter):
         ConstraintType.foreign_key: ConstraintSupport.ENFORCED,
     }
 
+    CATALOG_BY_RELATION_SUPPORT = True
+
     @classmethod
     def date_function(cls):
         return "now()"
@@ -113,9 +115,9 @@ class PostgresAdapter(SQLAdapter):
 
     def _get_catalog_schemas(self, manifest):
         # postgres only allow one database (the main one)
-        schemas = super()._get_catalog_schemas(manifest)
+        schema_search_map = super()._get_catalog_schemas(manifest)
         try:
-            return schemas.flatten()
+            return schema_search_map.flatten()
         except DbtRuntimeError as exc:
             raise CrossDbReferenceProhibitedError(self.type(), exc.msg)
 

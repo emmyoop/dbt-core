@@ -1,6 +1,7 @@
 
-{% macro postgres__get_catalog_relations(information_schema, schemas_by_relation) -%}
+{% macro postgres__get_catalog_relations(information_schema, relations) -%}
   {%- call statement('catalog', fetch_result=True) -%}
+
     {#
       If the user has multiple databases set and the first one is wrong, this will fail.
       But we won't fail in the case where there are multiple quoting-difference-only dbs, which is better.
@@ -28,7 +29,7 @@
     join pg_catalog.pg_attribute col on col.attrelid = tbl.oid
     left outer join pg_catalog.pg_description tbl_desc on (tbl_desc.objoid = tbl.oid and tbl_desc.objsubid = 0)
     left outer join pg_catalog.pg_description col_desc on (col_desc.objoid = tbl.oid and col_desc.objsubid = col.attnum)
-    {{ postgres__get_catalog_where_clause(schemas_by_relation) }}
+    {{ postgres__get_catalog_where_clause(relations) }}
       and not pg_is_other_temp_schema(sch.oid) -- not a temporary schema belonging to another session
       and tbl.relpersistence in ('p', 'u') -- [p]ermanent table or [u]nlogged table. Exclude [t]emporary tables
       and tbl.relkind in ('r', 'v', 'f', 'p') -- o[r]dinary table, [v]iew, [f]oreign table, [p]artitioned table. Other values are [i]ndex, [S]equence, [c]omposite type, [t]OAST table, [m]aterialized view
@@ -47,25 +48,22 @@
 
 
 {% macro postgres__get_catalog(information_schema, schemas) -%}
-  {%- set relations_by_schema = dict() -%}
+  {%- set relations = [] -%}
   {%- for schema in schemas -%}
-    {%- set dummy = relations_by_schema.update({schema: None}) -%}
+    {%- set dummy = relations.append({'schema': schema}) -%}
   {%- endfor -%}
-  {{ return(postgres__get_catalog_relations(information_schema, relations_by_schema)) }}
+  {{ return(postgres__get_catalog_relations(information_schema, relations)) }}
 {%- endmacro %}
 
 
-{% macro postgres__get_catalog_where_clause(relations_by_schema) %}
+{% macro postgres__get_catalog_where_clause(relations) %}
     where (
-      {%- for schema, relations in relations_by_schema.items() -%}
-        {%- if relations == None -%}
-          upper(sch.nspname) = upper('{{ schema }}')
-        {%- elif len(relations) > 0 -%}
-          (upper(sch.nspname) = upper('{{ schema }}') and (
-          {%- for relation in relations -%}
-            upper(sch.relname) = upper('{{ relation }}') {%- if not loop.last %} or {% endif -%}
-          {%- endfor -%}
-          )
+      {%- for relation in relations -%}
+        {%- if relations.identifier -%}
+          (upper(sch.nspname) = upper('{{ relation.schema }}') and
+           upper(sch.relname) = upper('{{ relation.identifier }}'))
+        {%- else-%}
+          upper(sch.nspname) = upper('{{ relation.schema }}')
         {%- endif -%}
         {%- if not loop.last %} or {% endif -%}
       {%- endfor -%}
