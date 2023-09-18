@@ -11,7 +11,6 @@ from tests.functional.show.fixtures import (
     models__second_model,
     models__ephemeral_model,
     schema_yml,
-    models__sql_header,
     private_model_yml,
 )
 
@@ -25,7 +24,6 @@ class ShowBase:
             "sample_number_model_with_nulls.sql": models__sample_number_model_with_nulls,
             "second_model.sql": models__second_model,
             "ephemeral_model.sql": models__ephemeral_model,
-            "sql_header.sql": models__sql_header,
         }
 
     @pytest.fixture(scope="class")

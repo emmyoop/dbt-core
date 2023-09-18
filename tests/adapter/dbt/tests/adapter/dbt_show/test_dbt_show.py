@@ -1,12 +1,28 @@
 import pytest
-from dbt.tests.util import run_dbt_and_capture, run_dbt
+from dbt.tests.util import run_dbt
 
-from tests.functional.show.test_show import ShowBase
-from tests.functional.show.fixtures import models__second_ephemeral_model
+from dbt.tests.adapter.dbt_show.fixtures import (
+    models__sql_header,
+    models__ephemeral_model,
+    models__second_ephemeral_model,
+    models__sample_model,
+    seeds__sample_seed,
+)
 
 
 # -- Below we define base classes for tests you import based on if your adapter supports dbt show or not --
-class BaseShowLimit(ShowBase):
+class BaseShowLimit:
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {
+            "sample_model.sql": models__sample_model,
+            "ephemeral_model.sql": models__ephemeral_model,
+        }
+
+    @pytest.fixture(scope="class")
+    def seeds(self):
+        return {"sample_seed.csv": seeds__sample_seed}
+
     @pytest.mark.parametrize(
         "args,expected",
         [
@@ -26,12 +42,16 @@ class BaseShowLimit(ShowBase):
             assert f"limit {limit}" in results.results[0].node.compiled_code
 
 
-class BaseShowSqlHeader(ShowBase):
+class BaseShowSqlHeader:
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {
+            "sql_header.sql": models__sql_header,
+        }
+
     def test_sql_header(self, project):
         run_dbt(["build", "--vars", "timezone: Asia/Kolkata"])
-        (_, log_output) = run_dbt_and_capture(
-            ["show", "--select", "sql_header", "--vars", "timezone: Asia/Kolkata"]
-        )
+        run_dbt(["show", "--select", "sql_header", "--vars", "timezone: Asia/Kolkata"])
 
 
 class TestPostgresShowSqlHeader(BaseShowSqlHeader):
