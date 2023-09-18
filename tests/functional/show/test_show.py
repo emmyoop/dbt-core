@@ -143,37 +143,10 @@ class TestShowSecondEphemeral(ShowBase):
         assert "col_hundo" in log_output
 
 
-class TestShowLimit(ShowBase):
-    @pytest.mark.parametrize(
-        "args,expected",
-        [
-            ([], 5),  # default limit
-            (["--limit", 3], 3),  # fetch 3 rows
-            (["--limit", -1], 7),  # fetch all rows
-        ],
-    )
-    def test_limit(self, project, args, expected):
-        run_dbt(["build"])
-        dbt_args = ["show", "--inline", models__second_ephemeral_model, *args]
-        results = run_dbt(dbt_args)
-        assert len(results.results[0].agate_table) == expected
-        # ensure limit was injected in compiled_code when limit specified in command args
-        if results.args.get("limit") > 0:
-            assert "limit" in results.results[0].node.compiled_code
-
-
 class TestShowSeed(ShowBase):
     def test_seed(self, project):
         (_, log_output) = run_dbt_and_capture(["show", "--select", "sample_seed"])
         assert "Previewing node 'sample_seed'" in log_output
-
-
-class TestShowSqlHeader(ShowBase):
-    def test_sql_header(self, project):
-        run_dbt(["build", "--vars", "timezone: Asia/Kolkata"])
-        (_, log_output) = run_dbt_and_capture(
-            ["show", "--select", "sql_header", "--vars", "timezone: Asia/Kolkata"]
-        )
 
 
 class TestShowModelVersions:

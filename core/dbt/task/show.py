@@ -31,7 +31,9 @@ class ShowRunner(CompileRunner):
             context_override=model_context,
             kwargs={"limit": limit},
         )
-        adapter_response, execute_result = self.adapter.execute(compiled_node.compiled_code, fetch=True)
+        adapter_response, execute_result = self.adapter.execute(
+            compiled_node.compiled_code, fetch=True
+        )
 
         end_time = time.time()
 
