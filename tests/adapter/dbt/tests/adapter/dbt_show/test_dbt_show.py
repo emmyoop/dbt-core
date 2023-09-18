@@ -2,12 +2,10 @@ import pytest
 from dbt.tests.util import run_dbt_and_capture, run_dbt
 
 from tests.functional.show.test_show import ShowBase
-from tests.functional.show.fixtures import (
-    models__second_ephemeral_model
-)
+from tests.functional.show.fixtures import models__second_ephemeral_model
 
 
-# -- Below we define base classes for tests you import the one based on if your adapter uses dbt clone or not --
+# -- Below we define base classes for tests you import based on if your adapter supports dbt show or not --
 class BaseShowLimit(ShowBase):
     @pytest.mark.parametrize(
         "args,expected",
@@ -37,8 +35,8 @@ class BaseShowSqlHeader(ShowBase):
 
 
 class TestPostgresShowSqlHeader(BaseShowSqlHeader):
-   pass
+    pass
 
 
 class TestPostgresShowLimit(BaseShowLimit):
-   pass
+    pass
