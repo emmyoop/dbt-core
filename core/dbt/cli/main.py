@@ -177,6 +177,7 @@ def cli(ctx, **kwargs):
 
 # dbt build
 @cli.command("build")
+@global_flags
 @click.pass_context
 @p.defer
 @p.deprecated_defer
