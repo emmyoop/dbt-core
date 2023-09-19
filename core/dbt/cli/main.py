@@ -128,7 +128,6 @@ def global_flags(func):
     @p.fail_fast
     @p.log_cache_events
     @p.log_file_max_bytes
-    @p.log_format
     @p.log_format_file
     @p.log_level
     @p.log_level_file
@@ -150,8 +149,6 @@ def global_flags(func):
     @p.use_experimental_parser
     @p.version
     @p.version_check
-    @p.warn_error
-    @p.warn_error_options
     @p.write_json
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -167,8 +164,11 @@ def global_flags(func):
     no_args_is_help=True,
     epilog="Specify one of these sub-commands and you can find more help from there.",
 )
-@global_flags
 @click.pass_context
+@global_flags
+@p.warn_error
+@p.warn_error_options
+@p.log_format
 def cli(ctx, **kwargs):
     """An ELT tool for managing your SQL transformations and data models.
     For more documentation on these commands, visit: docs.getdbt.com
@@ -177,8 +177,8 @@ def cli(ctx, **kwargs):
 
 # dbt build
 @cli.command("build")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.exclude
@@ -295,8 +295,8 @@ def docs_generate(ctx, **kwargs):
 
 # dbt docs serve
 @docs.command("serve")
-@global_flags
 @click.pass_context
+@global_flags
 @p.browser
 @p.port
 @p.profile
@@ -324,8 +324,8 @@ def docs_serve(ctx, **kwargs):
 
 # dbt compile
 @cli.command("compile")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.exclude
@@ -371,8 +371,8 @@ def compile(ctx, **kwargs):
 
 # dbt show
 @cli.command("show")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.exclude
@@ -418,8 +418,8 @@ def show(ctx, **kwargs):
 
 # dbt debug
 @cli.command("debug")
-@global_flags
 @click.pass_context
+@global_flags
 @p.debug_connection
 @p.config_dir
 @p.profile
@@ -444,8 +444,8 @@ def debug(ctx, **kwargs):
 
 # dbt deps
 @cli.command("deps")
-@global_flags
 @click.pass_context
+@global_flags
 @p.profile
 @p.profiles_dir_exists_false
 @p.project_dir
@@ -465,8 +465,8 @@ def deps(ctx, **kwargs):
 
 # dbt init
 @cli.command("init")
-@global_flags
 @click.pass_context
+@global_flags
 # for backwards compatibility, accept 'project_name' as an optional positional argument
 @click.argument("project_name", required=False)
 @p.profile
@@ -488,8 +488,8 @@ def init(ctx, **kwargs):
 
 # dbt list
 @cli.command("list")
-@global_flags
 @click.pass_context
+@global_flags
 @p.exclude
 @p.indirect_selection
 @p.models
@@ -534,8 +534,8 @@ cli.add_command(ls, "ls")
 
 # dbt parse
 @cli.command("parse")
-@global_flags
 @click.pass_context
+@global_flags
 @p.profile
 @p.profiles_dir
 @p.project_dir
@@ -558,8 +558,8 @@ def parse(ctx, **kwargs):
 
 # dbt run
 @cli.command("run")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.favor_state
@@ -599,8 +599,8 @@ def run(ctx, **kwargs):
 
 # dbt retry
 @cli.command("retry")
-@global_flags
 @click.pass_context
+@global_flags
 @p.project_dir
 @p.profiles_dir
 @p.vars
@@ -629,8 +629,8 @@ def retry(ctx, **kwargs):
 
 # dbt clone
 @cli.command("clone")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer_state
 @p.exclude
 @p.full_refresh
@@ -666,8 +666,8 @@ def clone(ctx, **kwargs):
 
 # dbt run operation
 @cli.command("run-operation")
-@global_flags
 @click.pass_context
+@global_flags
 @click.argument("macro")
 @p.args
 @p.profile
@@ -698,8 +698,8 @@ def run_operation(ctx, **kwargs):
 
 # dbt seed
 @cli.command("seed")
-@global_flags
 @click.pass_context
+@global_flags
 @p.exclude
 @p.full_refresh
 @p.profile
@@ -735,8 +735,8 @@ def seed(ctx, **kwargs):
 
 # dbt snapshot
 @cli.command("snapshot")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.exclude
@@ -775,16 +775,16 @@ def snapshot(ctx, **kwargs):
 
 # dbt source
 @cli.group()
-@global_flags
 @click.pass_context
+@global_flags
 def source(ctx, **kwargs):
     """Manage your project's sources"""
 
 
 # dbt source freshness
 @source.command("freshness")
-@global_flags
 @click.pass_context
+@global_flags
 @p.exclude
 @p.output_path  # TODO: Is this ok to re-use?  We have three different output params, how much can we consolidate?
 @p.profile
@@ -826,8 +826,8 @@ cli.commands["source"].add_command(snapshot_freshness, "snapshot-freshness")  # 
 
 # dbt test
 @cli.command("test")
-@global_flags
 @click.pass_context
+@global_flags
 @p.defer
 @p.deprecated_defer
 @p.exclude
