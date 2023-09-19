@@ -27,6 +27,7 @@ from dbt.plugins import set_up_plugin_manager, get_plugin_manager
 
 from click import Context
 from functools import update_wrapper
+import resource
 import time
 import traceback
 
@@ -96,12 +97,18 @@ def postflight(func):
             fire_event(MainStackTrace(stack_trace=traceback.format_exc()))
             raise ExceptionExit(e)
         finally:
+            rusage = resource.getrusage(resource.RUSAGE_SELF)
             fire_event(
                 CommandCompleted(
                     command=ctx.command_path,
                     success=success,
                     completed_at=get_json_string_utcnow(),
                     elapsed=time.perf_counter() - start_func,
+                    process_user_time=rusage.ru_utime,
+                    process_kernel_time=rusage.ru_stime,
+                    process_mem_max_rss=rusage.ru_maxrss,
+                    process_in_blocks=rusage.ru_inblock,
+                    process_out_blocks=rusage.ru_oublock,
                 )
             )
 

@@ -371,7 +371,15 @@ sample_values = [
     types.DepsUnpinned(revision="", git=""),
     types.NoNodesForSelectionCriteria(spec_raw=""),
     types.CommandCompleted(
-        command="", success=True, elapsed=0.1, completed_at=get_json_string_utcnow()
+        command="",
+        success=True,
+        elapsed=0.1,
+        completed_at=get_json_string_utcnow(),
+        process_user_time=0,
+        process_kernel_time=0,
+        process_mem_max_rss=0,
+        process_in_blocks=0,
+        process_out_blocks=0,
     ),
     types.ShowNode(node_name="", preview="", is_inline=True, unique_id="model.test.my_model"),
     types.CompiledNode(node_name="", compiled="", is_inline=True, unique_id="model.test.my_model"),
