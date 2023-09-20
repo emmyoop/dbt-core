@@ -1,6 +1,9 @@
 import pickle
 import pytest
 
+from hypothesis import given
+from hypothesis.strategies import builds, lists
+
 from dbt.node_types import NodeType, AccessType
 from dbt.contracts.files import FileHash
 from dbt.contracts.graph.model_config import (
@@ -35,7 +38,9 @@ from dbt.contracts.graph.nodes import (
     Owner,
     TestMetadata,
     SemanticModel,
+    RefArgs,
 )
+from dbt.contracts.graph.semantic_models import Dimension, Entity, Measure
 from dbt.contracts.graph.unparsed import (
     ExposureType,
     FreshnessThreshold,
@@ -2357,109 +2362,16 @@ def basic_parsed_metric_object():
     )
 
 
-# SEMANTIC MODELS
-
-
-@pytest.fixture
-def full_parsed_semantic_model_dict():
-    return {
-        # From BaseNode
-        "name": "full_parsed_semantic_model",
-        "resource_type": str(NodeType.SemanticModel),
-        "package_name": "semantic_models",
-        "path": "a_path",
-        "original_file_path": "where/it/lived",
-        "unique_id": "project_name.semantic_models.full_parsed_semantic_model",
-        # From GraphNode
-        "fqn": ["project_name", "semantic_models", "full_parsed_semantic_model"],
-        # From SemanticModel
-        "model": 'ref("model_name")',
-        "node_relation": {
-            "alias": "model_name",
-            "schema_name": "schema_name",
-            "database": "database_name",
-            "relation_name": "database_name.schema_name.model_name",
-        },
-        "description": "a description of what this semantic model represents",
-        "defaults": {"agg_time_dimension": "a_time_dimension_name"},
-        "entities": [
-            {
-                "name": "foreign_entity",
-                "type": "foreign",
-                "description": "id of foreign semantic model",
-                "role": "what is this",
-                "expr": "foreign_id",
-            }
-        ],
-        "measures": [
-            {
-                "name": "measuring_stuff",
-                "agg": "count",
-                "description": "a count of stuff",
-                "create_metric": True,
-                "expr": "1",
-                "agg_params": {
-                    "percentile": 0.5,
-                    "use_discrete_percentile": False,
-                    "use_approximate_percentile": False,
-                },
-                "non_additive_dimension": {
-                    "name": "dimension_name",
-                    "window_choice": "sum",
-                    "window_groupings": ["some", "groupings"],
-                },
-                "agg_time_dimension": "non_default_time_dimension",
-            }
-        ],
-        "dimensions": [
-            {
-                "name": "my_dimension",
-                "type": "categorical",
-                "description": "a dimension that denotes a category",
-                "is_partition": False,
-                "type_params": {
-                    "time_granularity": "day",
-                    "validity_params": {
-                        "is_start": False,
-                        "is_end": False,
-                    },
-                },
-                "expr": "column_name",
-                "metadata": {
-                    "repo_file_path": "where/it/lives/file.yml",
-                    "file_slice": {
-                        "filename": "file.yml",
-                        "content": "raw dimension yaml",
-                        "start_line_number": 25,
-                        "end_line_number": 30,
-                    },
-                },
-            }
-        ],
-        "metadata": {
-            "repo_file_path": "where/it/lived/file.yml",
-            "file_slice": {
-                "filename": "file.yml",
-                "content": "raw_yaml_object...",
-                "start_line_number": 15,
-                "end_line_number": 30,
-            },
-        },
-        "depends_on": {"macros": [], "nodes": []},
-        "refs": [],
-        "created_at": 1,
-        "config": {"enabled": False, "group": "my_group"},
-        "unrendered_config": {},
-        "primary_entity": "for_some_reason_i_set_this",
-        "group": "my_group",
-    }
-
-
-def test_full_parsed_semantic_model(full_parsed_semantic_model_dict):
-    # check that the object loaded from the dict is symmetric with the original dict
-    loaded_object = SemanticModel.from_dict(full_parsed_semantic_model_dict)
-    assert_symmetric(loaded_object, full_parsed_semantic_model_dict, SemanticModel)
-    assert_from_dict(loaded_object, full_parsed_semantic_model_dict, SemanticModel)
-
-    # check that the loaded_object can be dumped and loaded without error
-    pickle.loads(pickle.dumps(loaded_object))
+@given(
+    builds(
+        SemanticModel,
+        depends_on=builds(DependsOn),
+        dimensions=lists(builds(Dimension)),
+        entities=lists(builds(Entity)),
+        measures=lists(builds(Measure)),
+        refs=lists(builds(RefArgs)),
+    )
+)
+def test_semantic_model_symmetry(semantic_model: SemanticModel):
+    assert semantic_model == SemanticModel.from_dict(semantic_model.to_dict())
+    assert semantic_model == pickle.loads(pickle.dumps(semantic_model))
