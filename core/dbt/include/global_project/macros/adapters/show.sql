@@ -1,6 +1,9 @@
 {% macro get_show_sql(compiled_code, sql_header, limit) -%}
   {%- set sql_header = sql_header -%}
   {{ sql_header if sql_header is not none }}
+  {%- if sql_header -%}
+  {{ sql_header }}
+  {%- endif -%}
   {%- if limit is not none -%}
   {{ get_limit_subquery_sql(compiled_code, limit) }}
   {%- else -%}
