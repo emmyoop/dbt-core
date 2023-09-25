@@ -63,6 +63,7 @@ from dbt_semantic_interfaces.parsing.where_filter_parser import WhereFilterParse
 
 from .model_config import (
     NodeConfig,
+    ModelConfig,
     SeedConfig,
     TestConfig,
     SourceConfig,
@@ -569,6 +570,7 @@ class HookNode(CompiledNode):
 class ModelNode(CompiledNode):
     resource_type: Literal[NodeType.Model]
     access: AccessType = AccessType.Protected
+    config: ModelConfig = field(default_factory=ModelConfig)
     constraints: List[ModelLevelConstraint] = field(default_factory=list)
     version: Optional[NodeVersion] = None
     latest_version: Optional[NodeVersion] = None
@@ -605,7 +607,7 @@ class ModelNode(CompiledNode):
             path="",
             unrendered_config=unrendered_config,
             depends_on=DependsOn(nodes=args.depends_on_nodes),
-            config=NodeConfig(enabled=args.enabled),
+            config=ModelConfig(enabled=args.enabled),
         )
 
     @property
@@ -1409,6 +1411,8 @@ class MetricInputMeasure(dbtClassMixin):
     name: str
     filter: Optional[WhereFilter] = None
     alias: Optional[str] = None
+    join_to_timespine: bool = False
+    fill_nulls_with: Optional[int] = None
 
     def measure_reference(self) -> MeasureReference:
         return MeasureReference(element_name=self.name)
@@ -1569,6 +1573,7 @@ class SemanticModel(GraphNode):
     model: str
     node_relation: Optional[NodeRelation]
     description: Optional[str] = None
+    label: Optional[str] = None
     defaults: Optional[Defaults] = None
     entities: Sequence[Entity] = field(default_factory=list)
     measures: Sequence[Measure] = field(default_factory=list)

@@ -64,7 +64,7 @@ class dbtRunner:
         self,
         manifest: Optional[Manifest] = None,
         callbacks: Optional[List[Callable[[EventMsg], None]]] = None,
-    ):
+    ) -> None:
         self.manifest = manifest
 
         if callbacks is None:
@@ -330,6 +330,7 @@ def docs_serve(ctx, **kwargs):
 @p.state
 @p.defer_state
 @p.deprecated_state
+@p.compile_inject_ephemeral_ctes
 @p.target
 @p.target_path
 @p.threads

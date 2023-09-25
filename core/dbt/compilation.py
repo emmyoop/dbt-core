@@ -125,7 +125,7 @@ def _get_tests_for_node(manifest: Manifest, unique_id: UniqueID) -> List[UniqueI
 
 
 class Linker:
-    def __init__(self, data=None):
+    def __init__(self, data=None) -> None:
         if data is None:
             data = {}
         self.graph = nx.DiGraph(**data)
@@ -274,7 +274,7 @@ class Linker:
 
 
 class Compiler:
-    def __init__(self, config):
+    def __init__(self, config) -> None:
         self.config = config
 
     def initialize(self):
@@ -319,6 +319,10 @@ class Compiler:
         """
         if model.compiled_code is None:
             raise DbtRuntimeError("Cannot inject ctes into an uncompiled node", model)
+
+        # tech debt: safe flag/arg access (#6259)
+        if not getattr(self.config.args, "inject_ephemeral_ctes", True):
+            return (model, [])
 
         # extra_ctes_injected flag says that we've already recursively injected the ctes
         if model.extra_ctes_injected:
