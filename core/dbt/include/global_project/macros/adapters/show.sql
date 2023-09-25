@@ -1,5 +1,5 @@
-{% macro show(limit) -%}
-  {%- set sql_header = config.get('sql_header', none) -%}
+{% macro get_show_sql(compiled_code, sql_header, limit) -%}
+  {%- set sql_header = sql_header -%}
   {{ sql_header if sql_header is not none }}
   {%- if limit is not none -%}
   {{ get_limit_subquery_sql(compiled_code, limit) }}

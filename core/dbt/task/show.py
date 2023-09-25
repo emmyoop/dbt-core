@@ -26,10 +26,14 @@ class ShowRunner(CompileRunner):
 
         model_context = generate_runtime_model_context(compiled_node, self.config, manifest)
         compiled_node.compiled_code = self.adapter.execute_macro(
-            macro_name="show",
+            macro_name="get_show_sql",
             manifest=manifest,
             context_override=model_context,
-            kwargs={"limit": limit},
+            kwargs={
+                "compiled_code": model_context["compiled_code"],
+                "sql_header": model_context["config"].get("sql_header"),
+                "limit": limit,
+            },
         )
         adapter_response, execute_result = self.adapter.execute(
             compiled_node.compiled_code, fetch=True
