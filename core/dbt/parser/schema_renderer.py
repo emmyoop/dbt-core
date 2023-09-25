@@ -34,20 +34,7 @@ class SchemaYamlRenderer(BaseRenderer):
         Return True if it's tests or description - those aren't rendered now
         because they're rendered later in parse_generic_tests or process_docs.
         """
-        if len(keypath) >= 1 and keypath[0] in ("tests", "description"):
-            return True
-
-        if len(keypath) == 2 and keypath[1] in ("tests", "description"):
-            return True
-
-        if (
-            len(keypath) >= 3
-            and keypath[0] == "columns"
-            and keypath[2] in ("tests", "description")
-        ):
-            return True
-
-        return False
+        return keypath[-1] in ("tests", "description")
 
     # don't render descriptions or test keyword arguments
     def should_render_keypath(self, keypath: Keypath) -> bool:
