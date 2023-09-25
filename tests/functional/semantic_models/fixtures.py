@@ -256,10 +256,7 @@ metrics:
 
 schema_without_semantic_model_yml = """models:
   - name: fct_revenue
-    description: "{{ doc('dimension_description') }}"
-    columns:
-        - name: revenue
-          description: "{{ doc('dimension_description') }}"
+    description: This is the model fct_revenue. It should be able to use doc blocks
 """
 
 fct_revenue_sql = """select
