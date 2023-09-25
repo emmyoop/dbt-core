@@ -59,9 +59,9 @@
 {% macro postgres__get_catalog_where_clause(relations) %}
     where (
       {%- for relation in relations -%}
-        {%- if relations.identifier -%}
+        {%- if relation.identifier -%}
           (upper(sch.nspname) = upper('{{ relation.schema }}') and
-           upper(sch.relname) = upper('{{ relation.identifier }}'))
+           upper(tbl.relname) = upper('{{ relation.identifier }}'))
         {%- else-%}
           upper(sch.nspname) = upper('{{ relation.schema }}')
         {%- endif -%}
